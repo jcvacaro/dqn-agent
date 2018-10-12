@@ -14,6 +14,8 @@ from agent import Agent
 parser = argparse.ArgumentParser()
 
 parser.add_argument('--seed', help="Seed for random number generation", default=0)
+parser.add_argument('--checkpoint', help="The model checkpoint file name", default="checkpoint.pth")
+parser.add_argument('--reward_plot', help="The reward plot file name", default="reward_plot.png")
 
 # training/testing flags
 parser.add_argument('--train', help="train or test (flag)", action="store_true")
@@ -63,9 +65,9 @@ def create_environment():
     return env, brain, brain_name, action_size, state_size
 
 def test(agent, env, brain, brain_name, n_episodes):
-    if os.path.isfile('checkpoint.pth'):
+    if os.path.isfile(args.checkpoint):
         print("loading checkpoint for agent ...")
-        agent.qnetwork_local.load_state_dict(torch.load('checkpoint.pth'))
+        agent.qnetwork_local.load_state_dict(torch.load(args.checkpoint))
 
     # watch an untrained agent
     score = 0
@@ -115,7 +117,7 @@ def train(agent, env, brain, brain_name, n_episodes, eps_start, eps_end, eps_dec
             print('\rEpisode {}\tAverage Score: {:.2f}'.format(i_episode, np.mean(scores_window)))
         if np.mean(scores_window)>=13.0:
             print('\nEnvironment solved in {:d} episodes!\tAverage Score: {:.2f}'.format(i_episode, np.mean(scores_window)))
-            torch.save(agent.qnetwork_local.state_dict(), 'checkpoint.pth')
+            torch.save(agent.qnetwork_local.state_dict(), args.checkpoint)
             plot_rewards(scores_window)
             break
 
@@ -125,7 +127,7 @@ def plot_rewards(scores):
     plt.plot(np.arange(len(scores)), scores)
     plt.ylabel('Score')
     plt.xlabel('Episode #')
-    plt.savefig("rewards.png", transparent=True)
+    plt.savefig(args.reward_plot, transparent=True)
     plt.close()
             
 if __name__ == '__main__':
