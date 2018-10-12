@@ -25,9 +25,9 @@ The source code is implemented in Python, and uses PyTorch as the Machine Learni
 1. [Install Anaconda for Windows](https://conda.io/docs/user-guide/install/windows.html)
     * Select the Python 3x version
 2. [Install PyTorch via Anaconda](https://pytorch.org/get-started/locally/)
-3. Download the [Unity environment](https://drive.google.com/open?id=1Pjl54zFSBf2DreF3jfNLvHnkBm3VNEkJ)
+3. Download the [Unity environment](https://drive.google.com/uc?id=1Pjl54zFSBf2DreF3jfNLvHnkBm3VNEkJ)
     * Place the file in the repository folder, and unzip (or decompress) the file.
-4. Download the [model checkpoint](https://drive.google.com/open?id=1Le5DI8kVOhiUJhyAYar9jU7ArpSWfD3t)
+4. Download the [model checkpoint](https://drive.google.com/uc?id=1Le5DI8kVOhiUJhyAYar9jU7ArpSWfD3t)
     * Place the file in the repository folder
 
 ## Instructions
