@@ -33,7 +33,7 @@ parser.add_argument('--update_network_steps', help="How often to update the netw
 parser.add_argument('--prioritized_buffer', help="Use prioritized replay buffer (flag)", action="store_true")
 parser.add_argument('--buffer_size', help="The replay buffer size", default=int(1e5))
 parser.add_argument('--batch_size', help="The mini batch size", default=64)
-parser.add_argument('--update_buffer_steps', help="How often to update the buffer", default=1000)
+parser.add_argument('--update_buffer_steps', help="How often to update the buffer", default=10000)
 parser.add_argument('--alpha', help="The priority exponent", default=0.7)
 parser.add_argument('--beta', help="The importance sampling exponent", default=0.5)
 parser.add_argument('--beta_inc', help="The importance sampling exponent increment", default=0.00001)

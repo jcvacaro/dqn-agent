@@ -140,9 +140,9 @@ class PrioritizedReplayBuffer:
         return (states, actions, rewards, next_states, dones, weights, entries)
         
     def update(self, entries, errors):
-        errors = errors.cpu().data.numpy()
+        errors = errors.cpu()
         for entry, error in zip(entries, errors):
-            entry[0] = error[0]
+            entry[0] = abs(error[0])
 
     def __len__(self):
         """Return the current size of internal memory."""

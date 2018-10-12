@@ -106,7 +106,7 @@ class Agent():
         self.optimizer.step()
         
         # update memory 
-        self.memory.update(internal_state, torch.abs(td_error.detach()))
+        self.memory.update(internal_state, td_error.detach())
 
         # update target network
         self.soft_update(self.qnetwork_local, self.qnetwork_target, self.tau)                     
