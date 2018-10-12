@@ -6,24 +6,27 @@
 
 ## Learning Algorithm
 
+It is possible to identify four distinct components in DQN-based algorithms: (1) the training loop, agent--environment interaction; (2) the DQN algorithm itself; (3) the particular replay buffer strategy; and (4) the neural network used to generate Q-values.
+
 ### The training loop
 
 `main.py` contains the traditional training loop:
 
-* initialize the environment
-* for each episode
-    * get the initial state from the environment
-    * for each step in the current episode
-        * get the next action from the agent
-        * get the next state and reward from the environment
-        * the agent observes the new experience and improve its model
-        * verifiy if the agent achieved the goal
+- initialize the environment
+- for each episode
+    - get the initial state from the environment
+    - for each step in the current episode
+        - get the next action from the agent
+        - get the next state and reward from the environment
+        - the agent observes the new experience and improve its model
+        - verifiy if the agent achieved the goal
 
 ### The DQN algorithm
     
 `agent.py` contains the DQN/Double DQN algorithms. Each time the training loop observes a new experience (state, action, reward, next state, done) the method `step` is invoked. The experience is stored into the replay buffer, and if the buffer contains at least batch size entries, a new batch of experience is sampled. 
 
-The `learn` method  trains both the local and target networks based on such experiences. For the original DQN algorithm, the next Q-values are obtained directly from the target network. For the Double DQN algorithm, the action selection and evaluation are performed in different steps. First the action is obtained from the local network, it is the index of the max Q-value. Then, the evaluation of such action is obtained from the  target network. It is the corresponding Q-value of the previously selected action index. For both cases, the reward and discount factor gamma are applied to the target Q-value.
+The `learn` method  trains both the local and target networks based on such experiences. For the original DQN algorithm, the next Q-values are 
+obtained directly from the target network. Unfortunately, such direct evaluation may lead to overoptimistic value estimates. In the Double DQN algorithm, the action selection and evaluation are performed in different steps. First the action is obtained from the local network, it is the index of the max Q-value. Then, the evaluation of such action is obtained from the  target network. It is the corresponding Q-value of the previously selected action index. For both cases, the reward and discount factor gamma are applied to the target Q-value.
 
 Finally, the TD error is computed as the difference between the target and current Q-values, and the weighted loss is calculated according to the configured replay buffer strategy.
 
@@ -67,7 +70,8 @@ The complete configuration is shown in the table below.
 
 ## Ideas for Future Work
 
-The submission has concrete future ideas for improving the agent's performance.
+- Evaluate other neural network architectures: Moving from a 3-layer MLP to a 4-layer MLP network impacted the learning time significantly.  evidence suggests that other models such as convolutional networks may bring additional gains.
+- Reward noise reduction: Looking at the reward plot above, it seems the reward has great variance over the 100 episodes. The advantage function is a common mechanism to reduce variance in policy gradients. An extension to the DQN algorithm is presented in Dueling Network Architectures for Deep Reinforcement Learning, which uses advantage functions.
 
 ## References
 
