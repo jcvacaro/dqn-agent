@@ -68,9 +68,9 @@ The complete configuration is shown in the table below.
 | tau             | For soft update of target parameters               | 1e-3     |
 | lr              | The learning rate                                  |  5e-4    |
 
-## Ideas for Future Work
+## Ideas for future work
 
-- Evaluate other neural network architectures: Moving from a 3-layer MLP to a 4-layer MLP network impacted the learning time significantly.  evidence suggests that other models such as convolutional networks may bring additional gains.
+- Evaluate other neural network architectures: Moving from a 3-layer MLP to a 4-layer MLP network impacted the learning time significantly. This evidence suggests that other models such as convolutional or recurrent networks may bring additional gains.
 - Reward noise reduction: Looking at the reward plot above, it seems the reward has great variance over the 100 episodes. The advantage function is a common mechanism to reduce variance in policy gradients. An extension to the DQN algorithm is presented in Dueling Network Architectures for Deep Reinforcement Learning, which uses advantage functions.
 
 ## References

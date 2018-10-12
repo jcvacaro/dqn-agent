@@ -23,12 +23,12 @@ The task is episodic, and in order to solve the environment, your agent must get
 The source code is implemented in Python, and uses PyTorch as the Machine Learning framework. It should run on any compatible operating system. However, the instructions below are for Windows only. 
 
 1. [Install Anaconda for Windows](https://conda.io/docs/user-guide/install/windows.html)
-    * Select the Python 3x version
+    - Select the Python 3x version
 2. [Install PyTorch via Anaconda](https://pytorch.org/get-started/locally/)
 3. Download the [Unity environment](https://drive.google.com/uc?id=1Pjl54zFSBf2DreF3jfNLvHnkBm3VNEkJ)
-    * Place the file in the repository folder, and unzip (or decompress) the file.
+    - Place the file in the repository folder, and unzip (or decompress) the file.
 4. Download the [model checkpoint](https://drive.google.com/uc?id=1Le5DI8kVOhiUJhyAYar9jU7ArpSWfD3t)
-    * Place the file in the repository folder
+    - Place the file in the repository folder
 
 ## Instructions
 
@@ -49,7 +49,7 @@ Note: By default, the agent uses the Double DQN algorithm with a uniform samplin
 To test the agent using a model checkpoint:
 
 ```bash
-python main.py
+python main.py --checkpoint="banana_dqn_478_uniform_checkpoint.pth"
 ```
 
 By default the agent uses the Double DQN strategy, and a uniform sampling replay buffer. You can select the original DQN algorithm as follows:
