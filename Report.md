@@ -50,6 +50,21 @@ The environment is solved in 478 episodes. The following graph shows the reward 
 
 ![Trained Agent][image1]
 
+The complete configuration is shown in the table below.
+
+| Parameter       | Description                                        | Value    |
+| --------------- | -------------------------------------------------- | -------- |
+| algorithm       | The DQN flavor                                     | DDQN     |
+| replay_buffer   | The replay buffer strategy                         | uniform  |
+| buffer_size     | The replay buffer size                             | 1e5      |
+| batch_size      | The batch size                                     | 64       |
+| eps_start       | Epsilon start value for exploration/exploitation   | 1.0      |
+| eps_decay       | Epsilon decay value for exploration/exploitation   | 0.995    |
+| eps_end         | Epsilon minimum value for exploration/exploitation | 0.01     |
+| gamma           | The reward discount factor                         | 0.99     |
+| tau             | For soft update of target parameters               | 1e-3     |
+| lr              | The learning rate                                  |  5e-4    |
+
 ## Ideas for Future Work
 
 The submission has concrete future ideas for improving the agent's performance.
