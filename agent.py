@@ -13,7 +13,7 @@ device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 class Agent():
     """Interacts with and learns from the environment."""
 
-    def __init__(self, state_size, action_size, memory, batch_size, seed, lr, gamma, tau, update_network_steps, ddqn=True):
+    def __init__(self, state_size, action_size, memory, batch_size, seed, lr, gamma, tau, baseline, update_network_steps, ddqn=True):
         """Initialize an Agent object.
         
         Params
@@ -26,6 +26,7 @@ class Agent():
             lr (float): The learning rate 
             gamma (float): The reward discount factor
             tau (float): For soft update of target parameters
+            baseline (float): Baseline for updating network weights during training
             update_network_steps (int): How often to update the network
             ddqn (bool): Use double DQN network update strategy (default is true)
         """
@@ -36,6 +37,7 @@ class Agent():
         self.lr = lr
         self.gamma = gamma
         self.tau = tau
+        self.baseline = baseline
         self.update_network_steps = update_network_steps
         self.ddqn = ddqn
 
@@ -129,6 +131,7 @@ class Agent():
         loss = values ** 2
         loss = weights * loss 
         loss = loss.sum()
+        loss *= self.baseline
         return loss
     
     def soft_update(self, local_model, target_model, tau):

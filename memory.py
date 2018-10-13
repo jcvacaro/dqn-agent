@@ -11,7 +11,29 @@ import torch.nn.functional as F
 import torch.optim as optim
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-experience = namedtuple("Experience", field_names=["state", "action", "reward", "next_state", "done"])
+
+class experience:
+    """Represents an experience.
+    
+    It provides the __lt__ method so that it can be added to a heapq.
+    """
+    
+    def __init__(self, state, action, reward, next_state, done, error=1.0):
+        self.state = state
+        self.action = action
+        self.reward = reward
+        self.next_state = next_state
+        self.done = done
+        self.error = error
+        
+    def __lt__(self, other):
+        return self.error < other.error
+        
+    def __eq__(self, other):
+        return self.error == other.error
+        
+    def __repr__(self):
+        return str(self.error)
 
 class ReplayBuffer:
     """Fixed-size buffer to store experience tuples."""
@@ -77,7 +99,7 @@ class PrioritizedReplayBuffer:
         self.buffer_size = buffer_size
         self.batch_size = batch_size
         self.memory = []
-        self.memory_entry_counter = 0
+        self.step_counter = 0
         self.update_buffer_steps = update_buffer_steps
         self.seed = random.seed(seed)
         self.alpha = alpha
@@ -86,16 +108,15 @@ class PrioritizedReplayBuffer:
     
     def add(self, state, action, reward, next_state, done, error=1.0):
         """Add a new experience to memory."""
-        e = experience(state, action, reward, next_state, done)
-        entry = [error, self.memory_entry_counter, e]
+        e = experience(state, action, reward, next_state, done, error)
         if len(self.memory) >= self.buffer_size:
-            heapq.heapreplace(self.memory, entry)
+            heapq.heapreplace(self.memory, e)
         else:
-            heapq.heappush(self.memory, entry)
+            heapq.heappush(self.memory, e)
             
         # sort memory
-        self.memory_entry_counter = abs(self.memory_entry_counter + 1)
-        if (self.memory_entry_counter % self.update_buffer_steps) == 0:
+        self.step_counter = (self.step_counter + 1) % self.update_buffer_steps
+        if self.step_counter == 0:
             heapq.heapify(self.memory)
 
     def sample(self):
@@ -113,14 +134,14 @@ class PrioritizedReplayBuffer:
             start = i * segment_size
             end = len(self.memory) if i==self.batch_size-1 else (i+1)*segment_size
             j = random.randint(start, end-1)
-            entries.append(self.memory[j])
-            [error, counter, e] = entries[-1]
+            e = self.memory[j]
+            entries.append(e)
             states[i,:] = e.state
             actions[i] = e.action
             rewards[i] = e.reward
             next_states[i,:] = e.next_state
             dones[i] = e.done
-            p_j[i] = error
+            p_j[i] = e.error
 
         # place tensors in GPU for faster calculations
         states = torch.from_numpy(states).float().to(device)
@@ -142,7 +163,7 @@ class PrioritizedReplayBuffer:
     def update(self, entries, errors):
         errors = errors.cpu()
         for entry, error in zip(entries, errors):
-            entry[0] = abs(error[0])
+            entry.error = abs(error[0])
 
     def __len__(self):
         """Return the current size of internal memory."""

@@ -19,7 +19,7 @@ parser.add_argument('--reward_plot', help="The reward plot file name", default="
 
 # training/testing flags
 parser.add_argument('--train', help="train or test (flag)", action="store_true")
-parser.add_argument('--test_episodes', help="The number of episodes for testing", default=1)
+parser.add_argument('--test_episodes', help="The number of episodes for testing", default=3)
 parser.add_argument('--train_episodes', help="The number of episodes for training", default=500)
 parser.add_argument('--eps_start', help="Epsilon start value for exploration/exploitation", default=1.0)
 parser.add_argument('--eps_decay', help="Epsilon decay value for exploration/exploitation", default=0.995)
@@ -27,6 +27,7 @@ parser.add_argument('--eps_end', help="Epsilon minimum value for exploration/exp
 parser.add_argument('--gamma', help="The reward discount factor", default=0.99)
 parser.add_argument('--tau', help="For soft update of target parameters", default=1e-3)
 parser.add_argument('--lr', help="The learning rate ", default=5e-4)
+parser.add_argument('--baseline', help="Baseline for updating network weights during training", default=float(0.00025/4.0))
 parser.add_argument('--update_network_steps', help="How often to update the network", default=4)
 
 # replay memory 
@@ -163,6 +164,7 @@ if __name__ == '__main__':
                   lr=args.lr,
                   gamma=args.gamma,
                   tau=args.tau,
+                  baseline=args.baseline,
                   update_network_steps=args.update_network_steps)
 
     if args.train:
