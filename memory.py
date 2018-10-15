@@ -83,7 +83,7 @@ class ReplayBuffer:
 class PrioritizedReplayBuffer:
     """Fixed-size buffer to store experience tuples."""
 
-    def __init__(self, action_size, state_size, buffer_size, batch_size, update_buffer_steps, seed, alpha, beta, beta_inc):
+    def __init__(self, action_size, state_size, buffer_size, batch_size, seed, update_buffer_steps, alpha, beta, beta_inc):
         """Initialize a ReplayBuffer object.
 
         Params
@@ -93,6 +93,10 @@ class PrioritizedReplayBuffer:
             buffer_size (int): maximum size of buffer
             batch_size (int): size of each training batch
             seed (int): random seed
+            update_buffer_steps (int): How often to update the buffer
+            alpha (float): The priority exponent
+            beta (float): The importance sampling exponent
+            beta_inc (float): The importance sampling exponent increment
         """
         self.action_size = action_size
         self.state_size = state_size
@@ -100,8 +104,8 @@ class PrioritizedReplayBuffer:
         self.batch_size = batch_size
         self.memory = []
         self.step_counter = 0
-        self.update_buffer_steps = update_buffer_steps
         self.seed = random.seed(seed)
+        self.update_buffer_steps = update_buffer_steps
         self.alpha = alpha
         self.beta = beta
         self.beta_inc = beta_inc
@@ -113,11 +117,12 @@ class PrioritizedReplayBuffer:
             heapq.heapreplace(self.memory, e)
         else:
             heapq.heappush(self.memory, e)
-            
+
         # sort memory
         self.step_counter = (self.step_counter + 1) % self.update_buffer_steps
         if self.step_counter == 0:
             heapq.heapify(self.memory)
+            self.beta = min(1.0, self.beta * self.beta_inc)
 
     def sample(self):
         """Randomly sample a batch of experiences from memory."""
@@ -150,13 +155,15 @@ class PrioritizedReplayBuffer:
         next_states = torch.from_numpy(next_states).float().to(device)
         dones = torch.from_numpy(dones).float().to(device)
         p_j = torch.from_numpy(p_j).float().to(device)
+        n = torch.tensor(self.batch_size, dtype=torch.float, device=device)
+        alpha = torch.tensor(self.alpha, dtype=torch.float, device=device)
+        beta = torch.tensor(self.beta, dtype=torch.float, device=device)
         
         # the math
-        p_j = p_j.pow(self.alpha)
+        p_j = p_j ** alpha
         p_j = p_j / p_j.sum()
-        weights = (len(self.memory) * p_j).pow(-self.beta)
+        weights = (n * p_j) ** -beta
         weights /= weights.max()
-        self.beta = min(1.0, self.beta + self.beta_inc)
         
         return (states, actions, rewards, next_states, dones, weights, entries)
         
